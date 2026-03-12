@@ -171,7 +171,7 @@
     <!-- --- 图片轮播HTML结构 --- -->
 <div class="slideshow-container">
   <div class="mySlides fade">
-    <img src="https://lishuailong1988.github.io/assets/images/banner1.jpg" alt="毕业照-美因茨大学医学院">
+    <img src="https://lishuailong1988.github.io/assets/images/banner1.jpg" alt="毕业照">
   </div>
   <div class="mySlides fade">
     <img src="https://lishuailong1988.github.io/assets/images/banner2.jpg" alt="与同学合影-美因茨夜晚">
@@ -186,7 +186,7 @@
     <img src="https://lishuailong1988.github.io/assets/images/banner5.jpg" alt="生活照-弹钢琴">
   </div>
   <div class="mySlides fade">
-    <img src="https://lishuailong1988.github.io/assets/images/banner6.jpg" alt="白大褂照-实验室外">
+    <img src="https://lishuailong1988.github.io/assets/images/banner6.jpg" alt="白大褂照">
   </div>
   <div class="mySlides fade">
     <img src="https://lishuailong1988.github.io/assets/images/banner7.jpg" alt="双人毕业照">
