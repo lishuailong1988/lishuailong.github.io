@@ -172,7 +172,7 @@
     <!-- --- 图片轮播HTML结构 --- -->
     <div class="slideshow-container">
       <div class="mySlides fade">
-        <img src="https://lishuailong1988.github.io/assets/images/banner1.jpg" alt="轮播图1">
+        <img src="https://lishuailong1988.github.io/assets/images/IMG-20220711-WA0016.jpg" alt="轮播图1">
       </div>
       <div class="mySlides fade">
         <img src="https://lishuailong1988.github.io/assets/images/banner2.jpg" alt="轮播图2">
