@@ -226,7 +226,7 @@
       for (i = 0; i < dots.length; i++) { dots[i].className = dots[i].className.replace(" active", ""); }
       slides[slideIndex-1].style.display = "block";  
       dots[slideIndex-1].className += " active";
-      setTimeout(showSlides, 4000, slideIndex += 1); // 4秒自动切换一次
+      setTimeout(showSlides, 4000, slideIndex += 1); // 7秒自动切换一次
     }
 </script>
 <!-- --- 轮播逻辑结束 --- -->
