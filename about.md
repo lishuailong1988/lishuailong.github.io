@@ -26,5 +26,5 @@ Shuailong Li（第一作者）. Comparison of Dezocine and Tropisetron for the C
 ## 联系方式
 
 - 邮箱：[lishuailong@gmx.com](mailto:your-email@example.com)
-- researchgate： [https://www.researchgate.net/profile/Li-Shuailong-2?ev=hdr_xprf]
-- orcid: [https://orcid.org/my-orcid?orcid=0000-0003-1693-2024]
+- Researchgate：  [https://www.researchgate.net/profile/Li-Shuailong-2?ev=hdr_xprf]
+- orcid:   [https://orcid.org/my-orcid?orcid=0000-0003-1693-2024]
