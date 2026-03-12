@@ -27,24 +27,8 @@
         ]
     }
     </script>
-    </div>
     <style>
-        /* 德国国旗渐变背景 - 黑红金三色渐变 */
-body {
-    background: linear-gradient(135deg, #000000 0%, #000000 33%, #FF0000 33%, #FF0000 66%, #FFCC00 66%, #FFCC00 100%);
-    background-attachment: fixed; /* 背景固定，滚动不位移 */
-    padding: 2rem 0; /* 增加上下内边距，避免内容贴边 */
-}
-/* 内容容器加白色背景，保证文字可读性 */
-.main-container {
-    max-width: 800px;
-    margin: 0 auto;
-    background: #ffffff;
-    padding: 2rem 1rem;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-}
-        /* 基础样式，保证美观且易读 */
+        /* 合并body样式：德国国旗背景 + 基础样式，避免冲突 */
         * {
             margin: 0;
             padding: 0;
@@ -52,11 +36,25 @@ body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         }
         body {
+            /* 德国国旗渐变背景 - 黑红金三色渐变 */
+            background: linear-gradient(135deg, #000000 0%, #000000 33%, #FF0000 33%, #FF0000 66%, #FFCC00 66%, #FFCC00 100%);
+            background-attachment: fixed; /* 背景固定，滚动不位移 */
+            padding: 2rem 0; /* 增加上下内边距，避免内容贴边 */
+            /* 基础样式 */
             max-width: 800px;
             margin: 2rem auto;
             padding: 0 1rem;
             color: #333;
             line-height: 1.6;
+        }
+        /* 内容容器加白色背景，保证文字可读性 */
+        .main-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 2rem 1rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
         .profile-header {
             margin-bottom: 2rem;
@@ -119,6 +117,12 @@ body {
           width: 100%;
           height: 500px; /* 固定统一高度 */
           overflow: hidden;
+          animation: fade 1.5s ease; /* 新增：轮播切换动画 */
+        }
+        /* 轮播淡入动画 */
+        @keyframes fade {
+          from {opacity: 0.4} 
+          to {opacity: 1}
         }
         .mySlides img {
           width: 100%;
@@ -161,115 +165,140 @@ body {
         .active, .dot:hover {
           background-color: #717171;
         }
+        /* 底部版权栏样式 */
+        .footer {
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid #eee;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        .footer a {
+            color: #0366d6;
+            text-decoration: none;
+            margin: 0 0.5rem;
+        }
+        .footer a:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
     <div class="main-container">
-    <div class="profile-header">
-        <h1 class="name">李帅龙 / Li Shuailong</h1>
-        <p class="title">麻醉学专家、神经科学专家</p>
-        <div class="orcid">ORCID: 0000-0003-1693-2024</div>
-        <p class="keywords"><strong>核心研究领域</strong>：Neuroscience、Cell Biology、Anaesthetics</p>
+        <div class="profile-header">
+            <h1 class="name">李帅龙 / Li Shuailong</h1>
+            <p class="title">麻醉学专家、神经科学专家</p>
+            <div class="orcid">ORCID: 0000-0003-1693-2024</div>
+            <p class="keywords"><strong>核心研究领域</strong>：Neuroscience、Cell Biology、Anaesthetics</p>
+        </div>
+
+        <!-- --- 10张图片轮播HTML结构 --- -->
+        <div class="slideshow-container">
+            <div class="mySlides fade">
+                <img src="https://lishuailong1988.github.io/assets/images/banner1.jpg" alt="毕业照-学士服">
+            </div>
+            <div class="mySlides fade">
+                <img src="https://lishuailong1988.github.io/assets/images/banner2.jpg" alt="白大褂-美因茨大学">
+            </div>
+            <div class="mySlides fade">
+                <img src="https://lishuailong1988.github.io/assets/images/banner3.jpg" alt="学术汇报-小胶质细胞研究">
+            </div>
+            <div class="mySlides fade">
+                <img src="https://lishuailong1988.github.io/assets/images/banner4.jpg" alt="与导师团队合影">
+            </div>
+            <div class="mySlides fade">
+                <img src="https://lishuailong1988.github.io/assets/images/banner5.jpg" alt="弹钢琴-生活照">
+            </div>
+            <div class="mySlides fade">
+                <img src="https://lishuailong1988.github.io/assets/images/banner6.jpg" alt="白大褂室外照">
+            </div>
+            <div class="mySlides fade">
+                <img src="https://lishuailong1988.github.io/assets/images/banner7.jpg" alt="毕业照-红黑学位服">
+            </div>
+            <div class="mySlides fade">
+                <img src="https://lishuailong1988.github.io/assets/images/banner8.jpg" alt="双人毕业照">
+            </div>
+            <div class="mySlides fade">
+                <img src="https://lishuailong1988.github.io/assets/images/banner9.jpg" alt="学术会议合影">
+            </div>
+            <div class="mySlides fade">
+                <img src="https://lishuailong1988.github.io/assets/images/banner10.jpg" alt="学术会议-EJN/FENS">
+            </div>
+            <a class="prev" onclick="plusSlides(-1)">❮</a>
+            <a class="next" onclick="plusSlides(1)">❯</a>
+        </div>
+        <br>
+        <div style="text-align:center">
+            <span class="dot" onclick="currentSlide(1)"></span>
+            <span class="dot" onclick="currentSlide(2)"></span>
+            <span class="dot" onclick="currentSlide(3)"></span>
+            <span class="dot" onclick="currentSlide(4)"></span>
+            <span class="dot" onclick="currentSlide(5)"></span>
+            <span class="dot" onclick="currentSlide(6)"></span>
+            <span class="dot" onclick="currentSlide(7)"></span>
+            <span class="dot" onclick="currentSlide(8)"></span>
+            <span class="dot" onclick="currentSlide(9)"></span>
+            <span class="dot" onclick="currentSlide(10)"></span>
+        </div>
+        <!-- --- 轮播结构结束 --- -->
+
+        <div class="profile-section">
+            <h2 class="section-title">官方学术与社交账号</h2>
+            <ul class="link-list">
+                <li>🔬 ResearchGate: <a href="https://www.researchgate.net/profile/Li-Shuailong-2" target="_blank">https://www.researchgate.net/profile/Li-Shuailong-2</a></li>
+                <li>📇 ORCID: <a href="https://orcid.org/my-orcid?orcid=0000-0003-1693-2024" target="_blank">https://orcid.org/my-orcid?orcid=0000-0003-1693-2024</a></li>
+                <li>💻 GitHub: <a href="https://github.com/lishuailong1988" target="_blank">https://github.com/lishuailong1988</a></li>
+                <li>📝 知乎: <a href="https://www.zhihu.com/people/lishuailong" target="_blank">https://www.zhihu.com/people/lishuailong</a></li>
+                <li>💼 LinkedIn: <a href="https://linkedin.com/in/lishuailong" target="_blank">https://linkedin.com/in/lishuailong</a></li>
+            </ul>
+        </div>
+
+        <p style="margin-top: 1rem;">更多详情请查看 <a href="/about/">关于我</a></p>
+
+        <!-- 底部版权栏 -->
+        <div class="footer">
+            © MD since 2007 Li Shuailong | <a href="/">首页</a> | <a href="/关于我/">about</a>
+        </div>
+
+        <!-- --- 图片轮播JS逻辑 --- -->
+        <script>
+            let slideIndex = 0; // 从0开始索引，兼容更多图片
+            showSlides();
+
+            function plusSlides(n) {
+                showSlides(slideIndex += n);
+            }
+
+            function currentSlide(n) {
+                showSlides(slideIndex = n - 1); // 对应HTML索引
+            }
+
+            function showSlides() {
+                let i;
+                let slides = document.getElementsByClassName("mySlides");
+                let dots = document.getElementsByClassName("dot");
+                
+                // 自动循环逻辑
+                slideIndex++;
+                if (slideIndex > slides.length) {slideIndex = 1}    
+                
+                // 隐藏所有图片
+                for (i = 0; i < slides.length; i++) {
+                    slides[i].style.display = "none";  
+                }
+                // 重置所有圆点
+                for (i = 0; i < dots.length; i++) {
+                    dots[i].className = dots[i].className.replace(" active", "");
+                }
+                // 显示当前图片
+                slides[slideIndex-1].style.display = "block";  
+                dots[slideIndex-1].className += " active";
+                
+                // 7秒自动切换
+                setTimeout(showSlides, 7000);
+            }
+        </script>
     </div>
-
-    <!-- --- 10张图片轮播HTML结构 --- -->
-    <div class="slideshow-container">
-      <div class="mySlides fade">
-        <img src="https://lishuailong1988.github.io/assets/images/banner1.jpg" alt="毕业照-学士服">
-      </div>
-      <div class="mySlides fade">
-        <img src="https://lishuailong1988.github.io/assets/images/banner2.jpg" alt="白大褂-美因茨大学">
-      </div>
-      <div class="mySlides fade">
-        <img src="https://lishuailong1988.github.io/assets/images/banner3.jpg" alt="学术汇报-小胶质细胞研究">
-      </div>
-      <div class="mySlides fade">
-        <img src="https://lishuailong1988.github.io/assets/images/banner4.jpg" alt="与导师团队合影">
-      </div>
-      <div class="mySlides fade">
-        <img src="https://lishuailong1988.github.io/assets/images/banner5.jpg" alt="弹钢琴-生活照">
-      </div>
-      <div class="mySlides fade">
-        <img src="https://lishuailong1988.github.io/assets/images/banner6.jpg" alt="白大褂室外照">
-      </div>
-      <div class="mySlides fade">
-        <img src="https://lishuailong1988.github.io/assets/images/banner7.jpg" alt="毕业照-红黑学位服">
-      </div>
-      <div class="mySlides fade">
-        <img src="https://lishuailong1988.github.io/assets/images/banner8.jpg" alt="双人毕业照">
-      </div>
-      <div class="mySlides fade">
-        <img src="https://lishuailong1988.github.io/assets/images/banner9.jpg" alt="学术会议合影">
-      </div>
-      <div class="mySlides fade">
-        <img src="https://lishuailong1988.github.io/assets/images/banner10.jpg" alt="学术会议-EJN/FENS">
-      </div>
-      <a class="prev" onclick="plusSlides(-1)">❮</a>
-      <a class="next" onclick="plusSlides(1)">❯</a>
-    </div>
-    <br>
-    <div style="text-align:center">
-      <span class="dot" onclick="currentSlide(1)"></span>
-      <span class="dot" onclick="currentSlide(2)"></span>
-      <span class="dot" onclick="currentSlide(3)"></span>
-      <span class="dot" onclick="currentSlide(4)"></span>
-      <span class="dot" onclick="currentSlide(5)"></span>
-      <span class="dot" onclick="currentSlide(6)"></span>
-      <span class="dot" onclick="currentSlide(7)"></span>
-      <span class="dot" onclick="currentSlide(8)"></span>
-      <span class="dot" onclick="currentSlide(9)"></span>
-      <span class="dot" onclick="currentSlide(10)"></span>
-    </div>
-    <!-- --- 轮播结构结束 --- -->
-
-    <div class="profile-section">
-        <h2 class="section-title">官方学术与社交账号</h2>
-        <ul class="link-list">
-            <li>🔬 ResearchGate: <a href="https://www.researchgate.net/profile/Li-Shuailong-2" target="_blank">https://www.researchgate.net/profile/Li-Shuailong-2</a></li>
-            <li>📇 ORCID: <a href="https://orcid.org/my-orcid?orcid=0000-0003-1693-2024" target="_blank">https://orcid.org/my-orcid?orcid=0000-0003-1693-2024</a></li>
-            <li>💻 GitHub: <a href="https://github.com/lishuailong1988" target="_blank">https://github.com/lishuailong1988</a></li>
-            <li>📝 知乎: <a href="https://www.zhihu.com/people/lishuailong" target="_blank">https://www.zhihu.com/people/lishuailong</a></li>
-            <li>💼 LinkedIn: <a href="https://linkedin.com/in/lishuailong" target="_blank">https://linkedin.com/in/lishuailong</a></li>
-        </ul>
-    </div>
-
-    <!-- --- 图片轮播JS逻辑 --- -->
-    <script>
-        let slideIndex = 0; // 从0开始索引，兼容更多图片
-        showSlides();
-
-        function plusSlides(n) {
-          showSlides(slideIndex += n);
-        }
-
-        function currentSlide(n) {
-          showSlides(slideIndex = n - 1); // 对应HTML索引
-        }
-
-        function showSlides() {
-          let i;
-          let slides = document.getElementsByClassName("mySlides");
-          let dots = document.getElementsByClassName("dot");
-          
-          // 自动循环逻辑
-          slideIndex++;
-          if (slideIndex > slides.length) {slideIndex = 1}    
-          
-          // 隐藏所有图片
-          for (i = 0; i < slides.length; i++) {
-            slides[i].style.display = "none";  
-          }
-          // 重置所有圆点
-          for (i = 0; i < dots.length; i++) {
-            dots[i].className = dots[i].className.replace(" active", "");
-          }
-          // 显示当前图片
-          slides[slideIndex-1].style.display = "block";  
-          dots[slideIndex-1].className += " active";
-          
-          // 7秒自动切换
-          setTimeout(showSlides, 7000);
-        }
-    </script>
-> 更多详情请查看 [关于我](/about/)
-</div>
+</body>
+</html>
