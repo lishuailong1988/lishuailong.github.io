@@ -11,6 +11,8 @@ title: Li Shuailong (李帅龙)
 
 ### 官方链接
 - GitHub：[https://github.com/lishuailong](https://github.com/lishuailong)
+- Researchgate： https://www.researchgate.net/profile/Li-Shuailong-2?ev=hdr_xprf
+- orcid: https://orcid.org/my-orcid?orcid=0000-0003-1693-2024
 - 知乎：[https://www.zhihu.com/people/lishuailong](https://www.zhihu.com/people/lishuailong)
 - 领英：[https://linkedin.com/in/lishuailong](https://linkedin.com/in/lishuailong)
 
