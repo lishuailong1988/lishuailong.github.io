@@ -27,7 +27,23 @@
         ]
     }
     </script>
+    </div>
     <style>
+        /* 德国国旗渐变背景 - 黑红金三色渐变 */
+body {
+    background: linear-gradient(135deg, #000000 0%, #000000 33%, #FF0000 33%, #FF0000 66%, #FFCC00 66%, #FFCC00 100%);
+    background-attachment: fixed; /* 背景固定，滚动不位移 */
+    padding: 2rem 0; /* 增加上下内边距，避免内容贴边 */
+}
+/* 内容容器加白色背景，保证文字可读性 */
+.main-container {
+    max-width: 800px;
+    margin: 0 auto;
+    background: #ffffff;
+    padding: 2rem 1rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
         /* 基础样式，保证美观且易读 */
         * {
             margin: 0;
@@ -148,6 +164,7 @@
     </style>
 </head>
 <body>
+    <div class="main-container">
     <div class="profile-header">
         <h1 class="name">李帅龙 / Li Shuailong</h1>
         <p class="title">麻醉学专家、神经科学专家</p>
@@ -254,6 +271,7 @@
           setTimeout(showSlides, 7000);
         }
     </script>
+</div>
 </body>
 </html>
 
