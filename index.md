@@ -258,7 +258,7 @@
         </div>
         <div class="data-row">
             <div class="data-name">论文被引次数</div>
-            <div class="data-num">76</div>
+            <div class="data-num">176</div>
         </div>
         <div class="source">数据来源：Google Scholar / Web of Science</div>
     </div>
