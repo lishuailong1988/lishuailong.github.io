@@ -65,7 +65,7 @@ permalink: /blog/
 
 <div class="blog-page">
   <div class="blog-container">
-    <h1 class="blog-title">学术博客 · Academic Blog</h1>
+    <h1 class="blog-title">医疗圈 · Academic Blog</h1>
     <p class="blog-sub">麻醉学 · 神经科学 · 科研心得 · 学术分享</p>
 
     <div class="blog-item">
