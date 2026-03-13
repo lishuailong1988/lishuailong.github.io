@@ -1,3 +1,9 @@
+const INVITE_CODE = "这里改邀请码";
+const ADMIN_PASS = "这里改管理员密码";
+
+const GUEST_MAX_USER = 5;   // 12小时最多几人
+const GUEST_MAX_POST = 5;   // 每人最多几篇
+const GUEST_HOUR = 12;      // 几小时重置
 <style>
 .sec-wrap{
   max-width:900px; margin:2rem auto;
@@ -107,11 +113,11 @@
   <div id="adminArea"></div>
 
   <div class="post-box" id="postArea">
-    <input placeholder="输入邀请码" id="inviteCode">
+    <input placeholder="邀请码（管理员免填）" id="inviteCode">
     <input placeholder="你的昵称（仅管理员可见）" id="authorName">
     <input placeholder="文章标题" id="title-{{ include.id }}">
     <textarea rows="3" placeholder="内容" id="content-{{ include.id }}"></textarea>
-    <button class="post-btn" onclick="submitPost()">提交审核</button>
+    <button class="post-btn" onclick="publishPost()">发布文章</button>
   </div>
 
   <div id="list-{{ include.id }}"></div>
@@ -122,7 +128,11 @@
 const sec = '{{ include.id }}';
 const INVITE_CODE = "微我50";
 const ADMIN_PASS = "258046";
-const MAX_GUEST_PER_DAY = 5;
+
+// 游客限制：12小时内最多5人，每人最多5篇
+const GUEST_MAX_USER = 5;
+const GUEST_MAX_POST = 5;
+const GUEST_HOUR = 12;
 
 const autoReplies = [
   "你的见解非常专业，令人受益匪浅！",
@@ -138,138 +148,186 @@ const autoReplies = [
   "High-quality content with strong expertise, thank you for your excellent sharing."
 ];
 
+let isAdminMode = false;
+
 function getRandomPraise() {
   return autoReplies[Math.floor(Math.random() * autoReplies.length)];
 }
 
-function isAdmin() {
-  return prompt("Admin Password:") === ADMIN_PASS;
+// ================== 权限判断 ==================
+function checkAdmin() {
+  if (isAdminMode) return true;
+  if (prompt("管理员密码：") === ADMIN_PASS) {
+    isAdminMode = true;
+    return true;
+  }
+  return false;
 }
-function canComment() {
-  let today = new Date().toISOString().split('T')[0];
-  if (localStorage.getItem("comment_used_"+today)) return true;
-  let c = parseInt(localStorage.getItem("guest_comment_"+today)||0);
-  if (c >= MAX_GUEST_PER_DAY) return false;
-  localStorage.setItem("guest_comment_"+today, c+1);
-  localStorage.setItem("comment_used_"+today, "true");
+
+function checkInvite(code) {
+  return code.trim() === INVITE_CODE;
+}
+
+// 游客限制：12小时内最多5人，每人5篇
+function checkGuestLimit() {
+  const now = Date.now();
+  const keyExpire = "guest_expire_" + sec;
+  const keyCount = "guest_user_count_" + sec;
+  const keyMyPost = "guest_my_post_" + sec;
+
+  let expire = localStorage.getItem(keyExpire);
+  if (!expire || now > expire) {
+    localStorage.setItem(keyExpire, now + GUEST_HOUR * 60 * 60 * 1000);
+    localStorage.setItem(keyCount, 0);
+    localStorage.setItem(keyMyPost, 0);
+  }
+
+  let userCount = parseInt(localStorage.getItem(keyCount) || 0);
+  let myPost = parseInt(localStorage.getItem(keyMyPost) || 0);
+
+  if (userCount >= GUEST_MAX_USER) {
+    alert("今日体验名额已满");
+    return false;
+  }
+  if (myPost >= GUEST_MAX_POST) {
+    alert("你今日已达最大发帖数");
+    return false;
+  }
+
+  if (myPost === 0) {
+    localStorage.setItem(keyCount, userCount + 1);
+  }
+  localStorage.setItem(keyMyPost, myPost + 1);
   return true;
 }
 
-function submitPost() {
-  let codeInput = document.getElementById("inviteCode");
-  if (!codeInput) {
-    alert("系统错误，请刷新重试");
-    return;
-  }
-  let code = codeInput.value.trim();
+// ================== 发布文章 ==================
+function publishPost() {
+  const code = document.getElementById("inviteCode").value.trim();
+  const title = document.getElementById("title-" + sec).value.trim();
+  const content = document.getElementById("content-" + sec).value.trim();
+  const author = document.getElementById("authorName").value.trim() || "游客";
 
-  if (code !== INVITE_CODE) {
-    alert("邀请码错误，请重新输入");
-    return;
-  }
-
-  let t = document.getElementById("title-"+sec).value.trim();
-  let c = document.getElementById("content-"+sec).value.trim();
-  let a = document.getElementById("authorName").value.trim() || "Guest";
-
-  if (!t || !c) {
+  if (!title || !content) {
     alert("请填写标题和内容");
     return;
   }
 
-  let pending = JSON.parse(localStorage.getItem("pending_"+sec))||[];
+  // 1. 管理员
+  if (checkAdmin()) {
+    submitToPending(title, content, author);
+    return;
+  }
+
+  // 2. 邀请码用户
+  if (checkInvite(code)) {
+    submitToPending(title, content, author);
+    return;
+  }
+
+  // 3. 普通游客
+  if (checkGuestLimit()) {
+    submitToPending(title, content, author);
+  }
+}
+
+function submitToPending(title, content, author) {
+  let pending = JSON.parse(localStorage.getItem("pending_" + sec) || "[]");
   pending.push({
-    title:t, content:c, author:a,
+    title, content, author,
     time: new Date().toLocaleString(),
     autoReply: getRandomPraise()
   });
-  localStorage.setItem("pending_"+sec, JSON.stringify(pending));
-  alert("提交成功，等待审核 ✅");
-  document.getElementById("title-"+sec).value="";
-  document.getElementById("content-"+sec).value="";
+  localStorage.setItem("pending_" + sec, JSON.stringify(pending));
+  alert("提交成功，等待管理员审核 ✅");
+
+  document.getElementById("title-" + sec).value = "";
+  document.getElementById("content-" + sec).value = "";
 }
 
+// ================== 加载文章 ==================
 function loadPosts() {
-  let container = document.getElementById("list-"+sec);
-  let posts = JSON.parse(localStorage.getItem("published_"+sec))||[];
+  const container = document.getElementById("list-" + sec);
+  const posts = JSON.parse(localStorage.getItem("published_" + sec) || "[]");
   container.innerHTML = "";
   posts.forEach((p, i) => {
-    let div = document.createElement("div");
+    const div = document.createElement("div");
     div.className = "article";
     div.innerHTML = `
       <h3>${p.title}</h3>
       <p>${p.content}</p>
-      <div class="auto-reply">💬 ${p.autoReply || "Great post!"}</div>
-      <div class="publisher" id="a_${i}">By: ${p.author}</div>
+      <div class="auto-reply">💬 ${p.autoReply}</div>
+      <div class="publisher">作者：${p.author}</div>
       <div class="comment">
-        <input placeholder="写评论…" onkeydown="if(event.key==='Enter')cmt(${i},this.value)">
+        <input placeholder="写评论…" onkeydown="if(event.key==='Enter')addComment(${i}, this.value)">
         <div id="cmt_${i}"></div>
       </div>`;
     container.appendChild(div);
-    loadCmt(i);
+    loadComments(i);
   });
 }
 
-function cmt(pid, txt) {
-  if (!canComment()) {
-    alert("今日评论名额已满！");
-    return;
-  }
-  if (!txt) return;
-  let posts = JSON.parse(localStorage.getItem("published_"+sec))||[];
-  posts[pid].comments.push(txt.trim());
-  localStorage.setItem("published_"+sec, JSON.stringify(posts));
+function addComment(pid, text) {
+  if (!text.trim()) return;
+  let posts = JSON.parse(localStorage.getItem("published_" + sec) || "[]");
+  posts[pid].comments.push(text.trim());
+  localStorage.setItem("published_" + sec, JSON.stringify(posts));
   event.target.value = "";
-  loadCmt(pid);
+  loadComments(pid);
 }
-function loadCmt(pid) {
-  let posts = JSON.parse(localStorage.getItem("published_"+sec))||[];
-  let box = document.getElementById("cmt_"+pid);
+
+function loadComments(pid) {
+  let posts = JSON.parse(localStorage.getItem("published_" + sec) || "[]");
+  const box = document.getElementById("cmt_" + pid);
   box.innerHTML = "";
   posts[pid].comments.forEach(c => {
-    let item = document.createElement("div");
+    const item = document.createElement("div");
     item.className = "comment-item";
     item.innerText = c;
     box.appendChild(item);
   });
 }
 
-function showAdmin() {
-  if (!isAdmin()) return;
-  let pending = JSON.parse(localStorage.getItem("pending_"+sec))||[];
-  let html = `<div class='admin-panel'><strong>🔴 待审核文章 (${pending.length})</strong><br>`;
-  pending.forEach((p,i)=>{
-    html+=`<div style='background:#fff; padding:6px; margin:6px 0; border-radius:6px'>
+// ================== 审核面板 ==================
+function showAdminPanel() {
+  if (!checkAdmin()) return;
+  const pending = JSON.parse(localStorage.getItem("pending_" + sec) || "[]");
+  let html = `<div class="admin-panel"><strong>🔴 待审核文章（${pending.length}）</strong><br>`;
+  pending.forEach((p, i) => {
+    html += `
+    <div style="background:#fff; padding:8px; margin:6px 0; border-radius:8px">
       <b>${p.title}</b><br>${p.content}<br>
-      <small>作者: ${p.author} | ${p.time}</small><br>
-      <button onclick='ok(${i})' style='color:green'>通过</button>
-      <button onclick='no(${i})' style='color:red'>拒绝</button>
+      <small>作者：${p.author}｜${p.time}</small><br>
+      <button onclick="approve(${i})" style="color:green">通过</button>
+      <button onclick="reject(${i})" style="color:red">拒绝</button>
     </div>`;
   });
-  document.getElementById("adminArea").innerHTML = html+"</div>";
+  document.getElementById("adminArea").innerHTML = html + "</div>";
 }
 
-function ok(idx) {
-  let p = JSON.parse(localStorage.getItem("pending_"+sec))||[];
-  let pub = JSON.parse(localStorage.getItem("published_"+sec))||[];
-  let item = p[idx];
+function approve(idx) {
+  let pending = JSON.parse(localStorage.getItem("pending_" + sec) || "[]");
+  let published = JSON.parse(localStorage.getItem("published_" + sec) || "[]");
+  const item = pending[idx];
   item.comments = [];
-  pub.unshift(item);
-  p.splice(idx,1);
-  localStorage.setItem("pending_"+sec, JSON.stringify(p));
-  localStorage.setItem("published_"+sec, JSON.stringify(pub));
-  showAdmin();
+  published.unshift(item);
+  pending.splice(idx, 1);
+  localStorage.setItem("pending_" + sec, JSON.stringify(pending));
+  localStorage.setItem("published_" + sec, JSON.stringify(published));
+  showAdminPanel();
   loadPosts();
 }
-function no(idx) {
-  let p = JSON.parse(localStorage.getItem("pending_"+sec))||[];
-  p.splice(idx,1);
-  localStorage.setItem("pending_"+sec, JSON.stringify(p));
-  showAdmin();
+
+function reject(idx) {
+  let pending = JSON.parse(localStorage.getItem("pending_" + sec) || "[]");
+  pending.splice(idx, 1);
+  localStorage.setItem("pending_" + sec, JSON.stringify(pending));
+  showAdminPanel();
 }
 
+// ================== 初始化 ==================
 window.onload = () => {
   loadPosts();
-  if (confirm("显示管理员面板？")) showAdmin();
+  if (confirm("显示管理员面板？")) showAdminPanel();
 };
 </script>
