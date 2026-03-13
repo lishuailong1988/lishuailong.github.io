@@ -110,7 +110,7 @@
         }
         .nav a {
             margin:0 1rem;
-            color:#fff;
+            color:#FFCC00;
             text-decoration:none;
         }
         .nav a:hover {
