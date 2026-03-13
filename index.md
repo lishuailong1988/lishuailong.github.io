@@ -304,14 +304,14 @@
 <div class="card donate-box">
     <div class="sidebar-title">☕ 赞助我</div>
     <div class="donate-desc">如果我的内容对你有帮助，欢迎支持</div>
-    <div class="pay-row">
-        <div>
-            <img src="alipay.jpg" alt="支付宝" style="width:100px; height:100px;">
-            <div style="text-align:center; font-size:12px; color:#666; margin-top:4px;">支付宝</div>
+   <div class="pay-row">
+        <div style="text-align:center;">
+            <img src="alipay.jpg" style="width:120px; height:120px; border:1px solid #eee; border-radius:8px;">
+            <div style="font-size:12px; margin-top:4px;">支付宝</div>
         </div>
-        <div>
-            <img src="wechat.jpg" alt="微信" style="width:100px; height:100px;">
-            <div style="text-align:center; font-size:12px; color:#666; margin-top:4px;">微信</div>
+        <div style="text-align:center;">
+            <img src="wechat.jpg" style="width:120px; height:120px; border:1px solid #eee; border-radius:8px;">
+            <div style="font-size:12px; margin-top:4px;">微信</div>
         </div>
     </div>
     <div class="donate-note">扫码赞助 | 金额随意 | 感谢支持</div>
@@ -341,6 +341,3 @@
     localStorage.setItem("visitCount",count);
     document.getElementById("visitCount").innerText="网站累计访问："+count+" 次";
 </script>
-
-</body>
-</html>
