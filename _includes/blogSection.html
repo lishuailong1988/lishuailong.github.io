@@ -1,149 +1,231 @@
 <style>
-  /* 整体美化 + 科技医疗背景 */
-  .sec-wrap{
-    max-width:900px;
-    margin:2rem auto;
-    background: #ffffff;
-    padding:2rem;
-    border-radius:18px;
-    box-shadow: 0 8px 30px rgba(0,70,150,0.15);
-    border-top: 6px solid #007bff;
-    background-image: linear-gradient(135deg, #f9fbfd 0%, #f1f7ff 100%);
-  }
-  /* 标题样式 */
-  .sec-wrap h1{
-    color: #1e293b;
-    margin-top:0;
-    font-size: 1.6rem;
-  }
-  /* 发帖盒子 */
-  .post-box{
-    background:#ffffff;
-    padding:1.2rem;
-    border-radius:12px;
-    margin-bottom:1rem;
-    border: 1px solid #e6f0ff;
-  }
-  .post-box input,
-  .post-box textarea{
-    width:100%;
-    padding:12px;
-    margin-bottom:10px;
-    border: 1px solid #dcebff;
-    border-radius:8px;
-    font-size:15px;
-    background: #fafcff;
-  }
-  .post-btn{
-    background:#007bff;
-    color:white;
-    border:none;
-    padding:10px 18px;
-    border-radius:8px;
-    cursor:pointer;
-    font-weight:bold;
-    transition: 0.2s;
-  }
-  .post-btn:hover{
-    background: #005cbf;
-  }
-  /* 文章卡片 */
-  .article{
-    background:white;
-    padding:1.4rem;
-    border-radius:12px;
-    margin-bottom:1rem;
-    border-left:5px solid #007bff;
-    box-shadow:0 2px 8px rgba(0,60,130,0.08);
-  }
-  .article h3{
-    margin-top:0;
-    color: #1e293b;
-  }
-  /* 评论区 */
-  .comment{
-    margin-top:12px;
-    padding-top:12px;
-    border-top:1px solid #eee;
-  }
-  .comment input{
-    width:100%;
-    padding:8px;
-    margin-top:8px;
-    border-radius:6px;
-    border:1px solid #eee;
-  }
-  .comment-item{
-    background:#f1f5f9;
-    padding:8px 12px;
-    border-radius:6px;
-    margin-top:6px;
-    font-size:14px;
-  }
-  /* 返回按钮 */
-  .back{
-    margin-top:1rem;
-    display:inline-block;
-    color:#007bff;
-    text-decoration:none;
-    font-weight:bold;
-  }
+.sec-wrap{
+  max-width:900px; margin:2rem auto;
+  background: linear-gradient(135deg, #f7fcff 0%, #e6f4ff 50%, #f0f9ff 100%);
+  padding:2.5rem; border-radius:20px;
+  box-shadow:0 10px 35px rgba(0,80,180,0.18);
+  border-top:8px solid #0066cc;
+  background-attachment: fixed;
+}
+.sec-wrap h1{
+  color:#1e293b; font-size:1.8rem;
+  font-weight:700;
+  margin-top:0;
+}
+.post-box{
+  background:#ffffff; padding:1.5rem; border-radius:16px;
+  margin-bottom:1.2rem; border:1px solid #e0eeff;
+  box-shadow:0 3px 12px rgba(0,80,180,0.06);
+}
+.post-box input, .post-box textarea{
+  width:100%; padding:14px; margin-bottom:12px;
+  border:1px solid #c6e2ff; border-radius:10px;
+  background:#fafdff; font-size:15px;
+}
+.post-btn{
+  background:#0066cc; color:white; border:none;
+  padding:12px 20px; border-radius:10px;
+  font-weight:bold; cursor:pointer;
+  transition:0.2s;
+}
+.post-btn:hover{background:#004c99}
+.article{
+  background:white; padding:1.6rem; border-radius:16px;
+  margin-bottom:1.2rem; border-left:6px solid #0066cc;
+  box-shadow:0 5px 15px rgba(0,70,150,0.08);
+}
+.article h3{margin-top:0; color:#1e293b; font-size:1.3rem}
+.publisher{font-size:12px;color:#666;margin-top:5px;display:none;}
+.auto-reply {
+  background:#d1e7ff;
+  padding:12px 16px;
+  border-radius:10px;
+  font-size:15px;
+  color:#003366;
+  margin:10px 0;
+  border-left:4px solid #0066cc;
+}
+.comment{
+  margin-top:14px; padding-top:14px; border-top:1px solid #eee;
+}
+.comment input{
+  width:100%; padding:10px; margin-top:10px;
+  border-radius:8px; border:1px solid #ddd;
+}
+.comment-item{
+  background:#f1f5f9; padding:10px 14px;
+  border-radius:8px; margin-top:8px; font-size:14px;
+}
+.back{
+  margin-top:1rem; display:inline-block;
+  color:#0066cc; font-weight:bold; text-decoration:none;
+  font-size:16px;
+}
+.guest-info{
+  background:#fff9e6; padding:12px; border-radius:10px; margin-bottom:10px; font-size:14px;
+}
+.admin-panel{
+  background:#ffebee; padding:12px; border-radius:10px; margin-bottom:10px; font-size:14px;
+}
 </style>
 
 <div class="sec-wrap">
   <h1>{{ include.title }}</h1>
-  <div class="post-box">
+
+  <div id="guestNotice"></div>
+  <div id="adminArea"></div>
+
+  <!-- 发帖框（仅邀请码用户可见） -->
+  <div class="post-box" id="postArea" style="display:none;">
+    <input placeholder="输入邀请码" id="inviteCode" style="margin-bottom:10px;">
+    <input placeholder="你的昵称（仅管理员可见）" id="authorName">
     <input placeholder="文章标题" id="title-{{ include.id }}">
-    <textarea rows="3" placeholder="写点内容…" id="content-{{ include.id }}"></textarea>
-    <button class="post-btn" onclick="publish('{{ include.id }}')">发布文章</button>
+    <textarea rows="3" placeholder="内容" id="content-{{ include.id }}"></textarea>
+    <button class="post-btn" onclick="submitPost()">提交审核</button>
   </div>
+
   <div id="list-{{ include.id }}"></div>
   <a href="/blog/" class="back">← 返回博客中心</a>
 </div>
 
 <script>
 const sec = '{{ include.id }}';
-function publish(sec) {
-  let t = document.getElementById('title-'+sec).value.trim();
-  let c = document.getElementById('content-'+sec).value.trim();
-  if (!t || !c) return;
-  let posts = JSON.parse(localStorage.getItem('posts_'+sec)) || [];
-  posts.unshift({ id: Date.now(), title: t, content: c, comments: [] });
-  localStorage.setItem('posts_'+sec, JSON.stringify(posts));
-  document.getElementById('title-'+sec).value = '';
-  document.getElementById('content-'+sec).value = '';
-  load(sec);
+const INVITE_CODE = "ADMIN2025";
+const ADMIN_PASS = "ADMIN888";
+const MAX_GUEST_PER_DAY = 5;
+
+// ------------------------------
+// 核心权限
+// ------------------------------
+function isAdmin() {
+  return prompt("请输入管理员密码：") === ADMIN_PASS;
 }
-function load(sec) {
-  let container = document.getElementById('list-'+sec);
-  let posts = JSON.parse(localStorage.getItem('posts_'+sec)) || [];
-  container.innerHTML = '';
+
+function canComment() {
+  let today = new Date().toISOString().split('T')[0];
+  let used = localStorage.getItem("comment_used_" + today);
+  if (used) return true;
+  let count = parseInt(localStorage.getItem("guest_comment_" + today) || 0);
+  if (count >= MAX_GUEST_PER_DAY) return false;
+  localStorage.setItem("guest_comment_" + today, count + 1);
+  localStorage.setItem("comment_used_" + today, "true");
+  return true;
+}
+
+// ------------------------------
+// 提交发帖（仅受邀用户）
+// ------------------------------
+function submitPost() {
+  let code = document.getElementById("inviteCode").value.trim();
+  if (code !== INVITE_CODE) {
+    alert("邀请码错误");
+    return;
+  }
+  let title = document.getElementById("title-" + sec).value.trim();
+  let content = document.getElementById("content-" + sec).value.trim();
+  let author = document.getElementById("authorName").value.trim() || "匿名用户";
+  if (!title || !content) return alert("请填写完整");
+
+  let pending = JSON.parse(localStorage.getItem("pending_" + sec)) || [];
+  pending.push({ title, content, author, time: new Date().toLocaleString() });
+  localStorage.setItem("pending_" + sec, JSON.stringify(pending));
+  alert("提交成功！等待管理员审核");
+  document.getElementById("title-" + sec).value = "";
+  document.getElementById("content-" + sec).value = "";
+}
+
+// ------------------------------
+// 加载已审核文章
+// ------------------------------
+function loadPosts() {
+  let container = document.getElementById("list-" + sec);
+  let posts = JSON.parse(localStorage.getItem("published_" + sec)) || [];
+  container.innerHTML = "";
   posts.forEach((p, i) => {
-    let div = document.createElement('div');
-    div.className = 'article';
-    div.innerHTML = `<h3>${p.title}</h3><p>${p.content}</p><div class="comment"><input placeholder="写评论…" onkeydown="if(event.key=='Enter')addComment('${sec}',${i},this.value)"><div id="cmt_${sec}_${i}"></div></div>`;
+    let div = document.createElement("div");
+    div.className = "article";
+    div.innerHTML = `
+      <h3>${p.title}</h3>
+      <p>${p.content}</p>
+      <div class="publisher" id="author_${i}">作者：${p.author}</div>
+      <div class="comment">
+        <input placeholder="写评论（每日限5人）" onkeydown="if(event.key==='Enter')comment(${i}, this.value)">
+        <div id="cmt_${i}"></div>
+      </div>`;
     container.appendChild(div);
-    loadCmt(sec, i);
+    loadComments(i);
   });
 }
-function addComment(sec, idx, text) {
+
+// ------------------------------
+// 评论功能
+// ------------------------------
+function comment(pid, text) {
+  if (!canComment()) return alert("今日评论名额已满！");
   if (!text.trim()) return;
-  let posts = JSON.parse(localStorage.getItem('posts_'+sec)) || [];
-  posts[idx].comments.push(text.trim());
-  localStorage.setItem('posts_'+sec, JSON.stringify(posts));
-  loadCmt(sec, idx);
-  event.target.value = '';
+  let posts = JSON.parse(localStorage.getItem("published_" + sec)) || [];
+  posts[pid].comments.push(text.trim());
+  localStorage.setItem("published_" + sec, JSON.stringify(posts));
+  event.target.value = "";
+  loadComments(pid);
 }
-function loadCmt(sec, idx) {
-  let posts = JSON.parse(localStorage.getItem('posts_'+sec)) || [];
-  let box = document.getElementById(`cmt_${sec}_${idx}`);
-  box.innerHTML = '';
-  posts[idx].comments.forEach(c => {
-    let item = document.createElement('div');
-    item.className = 'comment-item';
+
+function loadComments(pid) {
+  let posts = JSON.parse(localStorage.getItem("published_" + sec)) || [];
+  let box = document.getElementById("cmt_" + pid);
+  box.innerHTML = "";
+  posts[pid].comments.forEach(c => {
+    let item = document.createElement("div");
+    item.className = "comment-item";
     item.innerText = c;
     box.appendChild(item);
   });
 }
-window.onload = () => load(sec);
+
+// ------------------------------
+// 管理员功能
+// ------------------------------
+function showAdmin() {
+  if (!isAdmin()) return;
+  let pending = JSON.parse(localStorage.getItem("pending_" + sec)) || [];
+  let html = `<div class='admin-panel'><strong>🔴 待审核文章（${pending.length}）</strong><br>`;
+  pending.forEach((p, i) => {
+    html += `<div style='margin:5px 0; padding:5px; background:#fff; border-radius:4px;'>
+      <b>${p.title}</b><br>${p.content}<br>
+      <small>作者：${p.author} · ${p.time}</small><br>
+      <button onclick='approve(${i})' style='color:green'>通过</button>
+      <button onclick='reject(${i})' style='color:red'>拒绝</button>
+    </div>`;
+  });
+  html += "</div>";
+  document.getElementById("adminArea").innerHTML = html;
+  document.getElementById("postArea").style.display = "block";
+}
+
+function approve(idx) {
+  let pending = JSON.parse(localStorage.getItem("pending_" + sec)) || [];
+  let pub = JSON.parse(localStorage.getItem("published_" + sec)) || [];
+  let item = pending[idx];
+  pub.unshift({ ...item, comments: [] });
+  pending.splice(idx, 1);
+  localStorage.setItem("pending_" + sec, JSON.stringify(pending));
+  localStorage.setItem("published_" + sec, JSON.stringify(pub));
+  showAdmin();
+  loadPosts();
+}
+
+function reject(idx) {
+  let pending = JSON.parse(localStorage.getItem("pending_" + sec)) || [];
+  pending.splice(idx, 1);
+  localStorage.setItem("pending_" + sec, JSON.stringify(pending));
+  showAdmin();
+}
+
+// ------------------------------
+// 初始化
+// ------------------------------
+window.onload = () => {
+  loadPosts();
+  if (confirm("显示管理员面板？")) showAdmin();
+};
 </script>
