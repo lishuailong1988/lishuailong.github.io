@@ -1,21 +1,19 @@
 <style>
 .sec-wrap{
   max-width:900px; margin:2rem auto;
-  background: linear-gradient(135deg, #f7fcff 0%, #e6f4ff 50%, #f0f9ff 100%);
   padding:2.5rem; border-radius:20px;
-  box-shadow:0 10px 35px rgba(0,80,180,0.18);
+  box-shadow:0 10px 35px rgba(0,0,0,0.12);
   border-top:8px solid #0066cc;
   background-attachment: fixed;
 }
 .sec-wrap h1{
   color:#1e293b; font-size:1.8rem;
-  font-weight:700;
-  margin-top:0;
+  font-weight:700; margin-top:0;
 }
 .post-box{
   background:#ffffff; padding:1.5rem; border-radius:16px;
   margin-bottom:1.2rem; border:1px solid #e0eeff;
-  box-shadow:0 3px 12px rgba(0,80,180,0.06);
+  box-shadow:0 3px 12px rgba(0,0,0,0.05);
 }
 .post-box input, .post-box textarea{
   width:100%; padding:14px; margin-bottom:12px;
@@ -28,11 +26,11 @@
   font-weight:bold; cursor:pointer;
   transition:0.2s;
 }
-.post-btn:hover{background:#004c99}
+.post-btn:hover{opacity:0.9}
 .article{
   background:white; padding:1.6rem; border-radius:16px;
   margin-bottom:1.2rem; border-left:6px solid #0066cc;
-  box-shadow:0 5px 15px rgba(0,70,150,0.08);
+  box-shadow:0 5px 15px rgba(0,0,0,0.06);
 }
 .article h3{margin-top:0; color:#1e293b; font-size:1.3rem}
 .publisher{font-size:12px;color:#666;margin-top:5px;display:none;}
@@ -67,17 +65,50 @@
 .admin-panel{
   background:#ffebee; padding:12px; border-radius:10px; margin-bottom:10px; font-size:14px;
 }
+
+/* 👇 5 大板块独立主题色 👇 */
+.sec-wrap.clinical {
+  background: linear-gradient(135deg, #f0f9ff 0%, #d1e7ff 100%);
+  border-top-color: #007bff;
+}
+.sec-wrap.teach {
+  background: linear-gradient(135deg, #f0fff4 0%, #c7f5d4 100%);
+  border-top-color: #28a745;
+}
+.sec-wrap.research {
+  background: linear-gradient(135deg, #f8f0ff 0%, #e2d1ff 100%);
+  border-top-color: #9955ff;
+}
+.sec-wrap.academic {
+  background: linear-gradient(135deg, #fff0f6 0%, #ffd1eb 100%);
+  border-top-color: #ff69b4;
+}
+.sec-wrap.chat {
+  background: linear-gradient(135deg, #fffbf0 0%, #ffecb2 100%);
+  border-top-color: #ffb100;
+}
+
+.clinical .article{border-left-color:#007bff}
+.teach .article{border-left-color:#28a745}
+.research .article{border-left-color:#9955ff}
+.academic .article{border-left-color:#ff69b4}
+.chat .article{border-left-color:#ffb100}
+
+.clinical .post-btn{background:#007bff}
+.teach .post-btn{background:#28a745}
+.research .post-btn{background:#9955ff}
+.academic .post-btn{background:#ff69b4}
+.chat .post-btn{background:#ffb100}
 </style>
 
-<div class="sec-wrap">
+<!-- 👇 自动给板块加颜色类 👇 -->
+<div class="sec-wrap {{ include.id }}">
   <h1>{{ include.title }}</h1>
-
   <div id="guestNotice"></div>
   <div id="adminArea"></div>
 
-  <!-- 发帖框（仅邀请码用户可见） -->
   <div class="post-box" id="postArea" style="display:none;">
-    <input placeholder="输入邀请码" id="inviteCode" style="margin-bottom:10px;">
+    <input placeholder="输入邀请码" id="inviteCode">
     <input placeholder="你的昵称（仅管理员可见）" id="authorName">
     <input placeholder="文章标题" id="title-{{ include.id }}">
     <textarea rows="3" placeholder="内容" id="content-{{ include.id }}"></textarea>
@@ -94,52 +125,60 @@ const INVITE_CODE = "ADMIN2025";
 const ADMIN_PASS = "ADMIN888";
 const MAX_GUEST_PER_DAY = 5;
 
-// ------------------------------
-// 核心权限
-// ------------------------------
-function isAdmin() {
-  return prompt("请输入管理员密码：") === ADMIN_PASS;
+const autoReplies = [
+  "你的见解非常专业，令人受益匪浅！",
+  "内容详实有深度，非常值得学习和借鉴",
+  "观点独特清晰，一看就是经验丰富的专家",
+  "文笔流畅思路严谨，分享十分有价值",
+  "这篇内容质量超高，感谢用心分享干货",
+  "思路清晰逻辑到位，读完收获特别大",
+  "Your professional insights are truly impressive and highly valuable for all readers.",
+  "This is an excellent share with deep thoughts, clear logic and great practical meaning.",
+  "You have an amazing perspective and your writing is super helpful for everyone.",
+  "Wonderful article! It’s well-organized, educational and full of precious experience.",
+  "High-quality content with strong expertise, thank you for your excellent sharing."
+];
+
+function getRandomPraise() {
+  return autoReplies[Math.floor(Math.random() * autoReplies.length)];
 }
 
+function isAdmin() {
+  return prompt("Admin Password:") === ADMIN_PASS;
+}
 function canComment() {
   let today = new Date().toISOString().split('T')[0];
-  let used = localStorage.getItem("comment_used_" + today);
-  if (used) return true;
-  let count = parseInt(localStorage.getItem("guest_comment_" + today) || 0);
-  if (count >= MAX_GUEST_PER_DAY) return false;
-  localStorage.setItem("guest_comment_" + today, count + 1);
-  localStorage.setItem("comment_used_" + today, "true");
+  if (localStorage.getItem("comment_used_"+today)) return true;
+  let c = parseInt(localStorage.getItem("guest_comment_"+today)||0);
+  if (c >= MAX_GUEST_PER_DAY) return false;
+  localStorage.setItem("guest_comment_"+today, c+1);
+  localStorage.setItem("comment_used_"+today, "true");
   return true;
 }
 
-// ------------------------------
-// 提交发帖（仅受邀用户）
-// ------------------------------
 function submitPost() {
-  let code = document.getElementById("inviteCode").value.trim();
-  if (code !== INVITE_CODE) {
-    alert("邀请码错误");
-    return;
-  }
-  let title = document.getElementById("title-" + sec).value.trim();
-  let content = document.getElementById("content-" + sec).value.trim();
-  let author = document.getElementById("authorName").value.trim() || "匿名用户";
-  if (!title || !content) return alert("请填写完整");
+  let code = document.getElementById("inviteCode").value;
+  if (code !== INVITE_CODE) return alert("邀请码错误");
+  let t = document.getElementById("title-"+sec).value.trim();
+  let c = document.getElementById("content-"+sec).value.trim();
+  let a = document.getElementById("authorName").value.trim() || "Guest";
+  if (!t || !c) return alert("请填写标题和内容");
 
-  let pending = JSON.parse(localStorage.getItem("pending_" + sec)) || [];
-  pending.push({ title, content, author, time: new Date().toLocaleString() });
-  localStorage.setItem("pending_" + sec, JSON.stringify(pending));
-  alert("提交成功！等待管理员审核");
-  document.getElementById("title-" + sec).value = "";
-  document.getElementById("content-" + sec).value = "";
+  let pending = JSON.parse(localStorage.getItem("pending_"+sec))||[];
+  pending.push({
+    title:t, content:c, author:a,
+    time: new Date().toLocaleString(),
+    autoReply: getRandomPraise()
+  });
+  localStorage.setItem("pending_"+sec, JSON.stringify(pending));
+  alert("提交成功，等待审核 ✅");
+  document.getElementById("title-"+sec).value="";
+  document.getElementById("content-"+sec).value="";
 }
 
-// ------------------------------
-// 加载已审核文章
-// ------------------------------
 function loadPosts() {
-  let container = document.getElementById("list-" + sec);
-  let posts = JSON.parse(localStorage.getItem("published_" + sec)) || [];
+  let container = document.getElementById("list-"+sec);
+  let posts = JSON.parse(localStorage.getItem("published_"+sec))||[];
   container.innerHTML = "";
   posts.forEach((p, i) => {
     let div = document.createElement("div");
@@ -147,32 +186,29 @@ function loadPosts() {
     div.innerHTML = `
       <h3>${p.title}</h3>
       <p>${p.content}</p>
-      <div class="publisher" id="author_${i}">作者：${p.author}</div>
+      <div class="auto-reply">💬 ${p.autoReply || "Great post!"}</div>
+      <div class="publisher" id="a_${i}">By: ${p.author}</div>
       <div class="comment">
-        <input placeholder="写评论（每日限5人）" onkeydown="if(event.key==='Enter')comment(${i}, this.value)">
+        <input placeholder="写评论…" onkeydown="if(event.key==='Enter')cmt(${i},this.value)">
         <div id="cmt_${i}"></div>
       </div>`;
     container.appendChild(div);
-    loadComments(i);
+    loadCmt(i);
   });
 }
 
-// ------------------------------
-// 评论功能
-// ------------------------------
-function comment(pid, text) {
+function cmt(pid, txt) {
   if (!canComment()) return alert("今日评论名额已满！");
-  if (!text.trim()) return;
-  let posts = JSON.parse(localStorage.getItem("published_" + sec)) || [];
-  posts[pid].comments.push(text.trim());
-  localStorage.setItem("published_" + sec, JSON.stringify(posts));
+  if (!txt) return;
+  let posts = JSON.parse(localStorage.getItem("published_"+sec))||[];
+  posts[pid].comments.push(txt.trim());
+  localStorage.setItem("published_"+sec, JSON.stringify(posts));
   event.target.value = "";
-  loadComments(pid);
+  loadCmt(pid);
 }
-
-function loadComments(pid) {
-  let posts = JSON.parse(localStorage.getItem("published_" + sec)) || [];
-  let box = document.getElementById("cmt_" + pid);
+function loadCmt(pid) {
+  let posts = JSON.parse(localStorage.getItem("published_"+sec))||[];
+  let box = document.getElementById("cmt_"+pid);
   box.innerHTML = "";
   posts[pid].comments.forEach(c => {
     let item = document.createElement("div");
@@ -182,48 +218,39 @@ function loadComments(pid) {
   });
 }
 
-// ------------------------------
-// 管理员功能
-// ------------------------------
 function showAdmin() {
   if (!isAdmin()) return;
-  let pending = JSON.parse(localStorage.getItem("pending_" + sec)) || [];
-  let html = `<div class='admin-panel'><strong>🔴 待审核文章（${pending.length}）</strong><br>`;
-  pending.forEach((p, i) => {
-    html += `<div style='margin:5px 0; padding:5px; background:#fff; border-radius:4px;'>
+  let pending = JSON.parse(localStorage.getItem("pending_"+sec))||[];
+  let html = `<div class='admin-panel'><strong>🔴 待审核文章 (${pending.length})</strong><br>`;
+  pending.forEach((p,i)=>{
+    html+=`<div style='background:#fff; padding:6px; margin:6px 0; border-radius:6px'>
       <b>${p.title}</b><br>${p.content}<br>
-      <small>作者：${p.author} · ${p.time}</small><br>
-      <button onclick='approve(${i})' style='color:green'>通过</button>
-      <button onclick='reject(${i})' style='color:red'>拒绝</button>
+      <small>作者: ${p.author} | ${p.time}</small><br>
+      <button onclick='ok(${i})' style='color:green'>通过</button>
+      <button onclick='no(${i})' style='color:red'>拒绝</button>
     </div>`;
   });
-  html += "</div>";
-  document.getElementById("adminArea").innerHTML = html;
+  document.getElementById("adminArea").innerHTML = html+"</div>";
   document.getElementById("postArea").style.display = "block";
 }
-
-function approve(idx) {
-  let pending = JSON.parse(localStorage.getItem("pending_" + sec)) || [];
-  let pub = JSON.parse(localStorage.getItem("published_" + sec)) || [];
-  let item = pending[idx];
-  pub.unshift({ ...item, comments: [] });
-  pending.splice(idx, 1);
-  localStorage.setItem("pending_" + sec, JSON.stringify(pending));
-  localStorage.setItem("published_" + sec, JSON.stringify(pub));
-  showAdmin();
-  loadPosts();
+function ok(idx) {
+  let p = JSON.parse(localStorage.getItem("pending_"+sec))||[];
+  let pub = JSON.parse(localStorage.getItem("published_"+sec))||[];
+  let item = p[idx];
+  item.comments = [];
+  pub.unshift(item);
+  p.splice(idx,1);
+  localStorage.setItem("pending_"+sec, JSON.stringify(p));
+  localStorage.setItem("published_"+sec, JSON.stringify(pub));
+  showAdmin(); loadPosts();
 }
-
-function reject(idx) {
-  let pending = JSON.parse(localStorage.getItem("pending_" + sec)) || [];
-  pending.splice(idx, 1);
-  localStorage.setItem("pending_" + sec, JSON.stringify(pending));
+function no(idx) {
+  let p = JSON.parse(localStorage.getItem("pending_"+sec))||[];
+  p.splice(idx,1);
+  localStorage.setItem("pending_"+sec, JSON.stringify(p));
   showAdmin();
 }
 
-// ------------------------------
-// 初始化
-// ------------------------------
 window.onload = () => {
   loadPosts();
   if (confirm("显示管理员面板？")) showAdmin();
