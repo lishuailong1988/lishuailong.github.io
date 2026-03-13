@@ -50,11 +50,16 @@
         }
         .sidebar {
             flex:1;
+            display:flex;
+            flex-direction:column;
+            gap:1.5rem;
+        }
+        .card {
             background:#fff;
             padding:1.5rem;
             border-radius:12px;
             box-shadow:0 4px 12px rgba(0,0,0,0.1);
-            border:2px solid #FFCC00;
+            border-left:4px solid #007bff;
         }
         .sidebar-title {
             font-size:1.2rem;
@@ -110,11 +115,11 @@
         }
         .nav a {
             margin:0 1rem;
-            color:#FFCC00;
+            color:#fff;
             text-decoration:none;
         }
         .nav a:hover {
-            color:red;
+            color:#FFCC00;
         }
         .slideshow-container {
             position:relative;
@@ -182,9 +187,39 @@
             color:#fff;
             padding:8px 12px;
             border-radius:8px;
-            font-size:0.8rem;
             z-index:999;
+            font-size:0.8rem;
         }
+
+        /* 赞助卡片样式 */
+        .donate-box img {
+            max-width:180px;
+            border-radius:10px;
+            margin:1rem auto;
+            display:block;
+            border:1px solid #eee;
+        }
+        .donate-desc {
+            text-align:center;
+            color:#666;
+            font-size:0.95rem;
+        }
+        .donate-note {
+            text-align:center;
+            font-size:0.85rem;
+            color:#888;
+            margin-top:0.5rem;
+        }
+        .pay-row {
+            display:flex;
+            gap:10px;
+            justify-content:center;
+            margin-top:10px;
+        }
+        .pay-row img {
+            max-width:100px;
+        }
+
         @media(max-width:768px){
             .page-wrap{flex-direction:column;}
         }
@@ -250,17 +285,37 @@
         </div>
     </div>
 
+    <!-- 右侧栏：学术数据 + 赞助（支付宝+微信） -->
     <div class="sidebar">
-        <div class="sidebar-title">学术影响力</div>
-        <div class="data-row">
-            <div class="data-name">影响因子总和（IF）</div>
-            <div class="data-num">45.905</div>
+        <div class="card">
+            <div class="sidebar-title">学术影响力</div>
+            <div class="data-row">
+                <div class="data-name">影响因子总和（IF）</div>
+                <div class="data-num">45.905</div>
+            </div>
+            <div class="data-row">
+                <div class="data-name">论文被引次数</div>
+                <div class="data-num">176</div>
+            </div>
+            <div class="source">数据来源：Google Scholar / Web of Science</div>
         </div>
-        <div class="data-row">
-            <div class="data-name">论文被引次数</div>
-            <div class="data-num">176</div>
+
+        <!-- 赞助：支付宝 + 微信 -->
+        <div class="card donate-box">
+            <div class="sidebar-title">☕ 赞助</div>
+            <div class="donate-desc">如果我的内容对你有帮助，欢迎支持</div>
+            <div class="pay-row">
+                <div>
+                    <img src="https://mirror.ghproxy.com/https://raw.githubusercontent.com/lishuailong1988/lishuailong1988/main/alipay.jpg" alt="支付宝">
+                    <div style="text-align:center; font-size:12px; color:#666;">支付宝</div>
+                </div>
+                <div>
+                    <img src="https://mirror.ghproxy.com/https://raw.githubusercontent.com/lishuailong1988/lishuailong1988/main/wechat.jpg" alt="微信">
+                    <div style="text-align:center; font-size:12px; color:#666;">微信</div>
+                </div>
+            </div>
+            <div class="donate-note">扫码赞助 | 金额随意 | 感谢支持</div>
         </div>
-        <div class="source">数据来源：Google Scholar / Web of Science</div>
     </div>
 </div>
 
