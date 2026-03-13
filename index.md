@@ -336,8 +336,10 @@
         setTimeout(showSlides,6000);
     }
 
-    let count=localStorage.getItem("visitCount")||0;
-    count=parseInt(count)+1;
-    localStorage.setItem("visitCount",count);
-    document.getElementById("visitCount").innerText="网站累计访问："+count+" 次";
+    // 真正全站总访问量（所有人共用一个数字）
+fetch("https://api.countapi.xyz/hit/lishuailong.github.io/visits")
+  .then(res => res.json())
+  .then(data => {
+    document.getElementById("visitCount").innerText = "网站累计访问：" + data.value + " 次";
+  });
 </script>
